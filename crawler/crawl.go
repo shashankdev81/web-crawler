@@ -1,22 +1,56 @@
 package crawler
 
-func crawl(url string) {
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+)
 
+var wg = sync.WaitGroup{}
+var crawledSet = make(map[string]bool)
+
+func Crawl(url string) []string {
+	var results = []string{}
+	traverse(url)
+	wg.Wait()
+	for k, _ := range crawledSet {
+		results = append(results, k)
+	}
+	return results
+}
+
+func traverse(url string) {
+	fmt.Println("traverse called", url)
+	fmt.Println("crawledSet =", crawledSet)
+	if crawledSet[url] {
+		return
+	}
+	defer wg.Done()
+	crawledSet[url] = true
+	var fetched = fetch(url)
+	fmt.Println("fetched=", fetched)
+	for _, crawled := range fetched {
+		wg.Add(1)
+		go traverse(crawled)
+	}
 }
 
 func fetch(url string) []string {
 	var urls = []string{}
 
-	for i := 0; i < 10; i++ {
-		urls = append(urls, "https://finance.yahoo.com/")
-		urls = append(urls, "https://news.yahoo.com/")
-		urls = append(urls, "https://sports.yahoo.com/")
-		urls = append(urls, "https://mobile.yahoo.com/")
-		urls = append(urls, "https://shopping.yahoo.com/")
-		urls = append(urls, "https://entertainment.yahoo.com/")
+	urls = append(urls, "https://finance.yahoo.com/")
+	urls = append(urls, "https://news.yahoo.com/")
+	urls = append(urls, "https://sports.yahoo.com/")
+	urls = append(urls, "https://mobile.yahoo.com/")
+	urls = append(urls, "https://shopping.yahoo.com/")
+	urls = append(urls, "https://entertainment.yahoo.com/")
+	urls = append(urls, "https://tech.yahoo.com/")
+	urls = append(urls, "https://politics.yahoo.com/")
+	urls = append(urls, "https://housing.yahoo.com/")
+	urls = append(urls, "https://auto.yahoo.com/")
+	urls = append(urls, "https://cosmo.yahoo.com/")
 
-	}
-
-	return urls
+	var ind = rand.Intn(10)
+	return urls[ind : ind+1]
 
 }

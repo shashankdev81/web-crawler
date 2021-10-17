@@ -1,7 +1,14 @@
 package main
 
-import "github.com/shashankdev81/web-crawler/crawler"
+import (
+	"fmt"
+	"github.com/shashankdev81/web-crawler/crawler"
+)
 
 func main() {
-	crawler
+	var crawledUrls = crawler.Crawl("https://yahoo.com")
+	for url := range crawledUrls {
+		fmt.Println(url)
+	}
+
 }
