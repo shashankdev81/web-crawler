@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/shashankdev81/web-crawler/crawler"
+	"github.com/shashankdev81/web-crawler/CrawlWithRecursion"
 )
 
 func main() {
