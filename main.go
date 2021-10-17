@@ -1,7 +1,7 @@
 package main
 
-import "github.com/shashankdev81/web-crawler.git/crawler"
+import "github.com/shashankdev81/web-crawler/crawler"
 
 func main() {
-
+	crawler
 }
