@@ -1,7 +1,6 @@
 package recursive_crawler
 
 import (
-	"math/rand"
 	"sync"
 )
 
@@ -12,7 +11,7 @@ var lock = sync.RWMutex{}
 func Crawl(url string) []string {
 	var results = []string{}
 	wg.Add(1)
-	traverse(url)
+	go traverse(url)
 	wg.Wait()
 	for k, _ := range crawledSet {
 		results = append(results, k)
@@ -54,6 +53,7 @@ func fetch(url string) []string {
 	urls = append(urls, "https://auto.yahoo.com/")
 	urls = append(urls, "https://cosmo.yahoo.com/")
 
-	var ind = rand.Intn(10)
-	return urls[ind : ind+2]
+	//var ind = rand.Intn(10)
+	//return urls[ind : ind+2]
+	return urls
 }
