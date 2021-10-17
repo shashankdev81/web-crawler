@@ -1,4 +1,4 @@
-package recursive_crawler
+package crawler
 
 import (
 	"math/rand"
