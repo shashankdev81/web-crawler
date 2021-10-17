@@ -1,16 +1,17 @@
-package crawler
+package recursive_crawler
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 )
 
 var wg = sync.WaitGroup{}
 var crawledSet = make(map[string]bool)
+var lock = sync.RWMutex{}
 
 func Crawl(url string) []string {
 	var results = []string{}
+	wg.Add(1)
 	traverse(url)
 	wg.Wait()
 	for k, _ := range crawledSet {
@@ -20,19 +21,22 @@ func Crawl(url string) []string {
 }
 
 func traverse(url string) {
-	fmt.Println("traverse called", url)
-	fmt.Println("crawledSet =", crawledSet)
-	if crawledSet[url] {
+	lock.RLock()
+	_, ok := crawledSet[url]
+	lock.RUnlock()
+	if ok {
+		wg.Done()
 		return
 	}
-	defer wg.Done()
+	lock.Lock()
 	crawledSet[url] = true
+	lock.Unlock()
 	var fetched = fetch(url)
-	fmt.Println("fetched=", fetched)
 	for _, crawled := range fetched {
 		wg.Add(1)
 		go traverse(crawled)
 	}
+	wg.Done()
 }
 
 func fetch(url string) []string {
@@ -51,6 +55,5 @@ func fetch(url string) []string {
 	urls = append(urls, "https://cosmo.yahoo.com/")
 
 	var ind = rand.Intn(10)
-	return urls[ind : ind+1]
-
+	return urls[ind : ind+2]
 }
